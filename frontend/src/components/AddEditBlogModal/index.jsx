@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState  } from "react";
 import PropTypes from "prop-types";
 import { Modal } from "bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-
+import FormImage from "../FormImage"; 
 import Categories from "../Categories";
 
 import {
@@ -14,35 +14,41 @@ import {
 
 export default function AddEditBlogModal() {
   const dispatch = useDispatch();
-
+  const user = JSON.parse(localStorage.getItem("user"));
+  
   const { addBlog, editBlog } = useSelector((state) => state.blogs);
   const { categories } = useSelector((state) => state.categories);
 
   const [blog, setBlog] = useState();
+  const [blogImage, setBlogImage] = useState();
 
   const modalEl = document.getElementById("addEditModal");
+  
 
   const addEditModal = useMemo(() => {
     return modalEl ? new Modal(modalEl) : null;
   }, [modalEl]);
 
   useEffect(() => {
-    if (addBlog) {
-      setBlog(addBlog);
-      addEditModal.show();
-    } else if (editBlog) {
-      setBlog(editBlog);
-      addEditModal.show();
+    if (addEditModal) {
+      if (addBlog) {
+        setBlog(addBlog);
+        addEditModal.show();
+      } else if (editBlog) {
+        setBlog(editBlog);
+        addEditModal.show();
+      }
     }
   }, [addBlog, editBlog, addEditModal]);
 
   const onSubmit = (e) => {
     e?.preventDefault();
     if (isFormValid()) {
+      const blogForm = buildFormData();
       if (addBlog) {
-        dispatch(createBlog(blog));
+        dispatch(createBlog(blogForm));
       } else if (editBlog) {
-        dispatch(updateBlog(blog));
+        dispatch(updateBlog(blogForm));
       }
       resetBlog();
       addEditModal?.hide();
@@ -75,12 +81,35 @@ export default function AddEditBlogModal() {
     }
   };
 
+  const buildFormData = () => {
+    const formData = new FormData();
+    formData.append("id", blog.id);
+    formData.append("image", blog.image);
+    formData.append("title", blog.title);
+    formData.append("description", blog.description);
+    formData.append("categories", JSON.stringify(blog.categories));
+    formData.append("content", JSON.stringify(blog.content));
+      formData.append("authorId", user?._id);
+    return formData;
+  };
+  
+  const onImageChange = (e) => {
+    if (e?.target?.files?.length) {
+      const file = e.target.files[0];
+      setBlogImage(URL.createObjectURL(file));
+      setBlog({ ...blog, image: file });
+    }
+  };
+
+  
+
   if (!categories && !categories?.length) {
     return null;
   }
-
+  
   return (
-    <div>
+    
+    <div> 
       <div
         className="modal fade"
         id="addEditModal"
@@ -89,8 +118,12 @@ export default function AddEditBlogModal() {
         aria-hidden="true"
       >
         <div className="modal-dialog modal-xl">
+       
           <div className="modal-content">
+          <form id="blogForm"></form>
+  <FormImage image={blogImage} onChange={onImageChange} />
             <div className="modal-header">
+           
               <h1 className="modal-title fs-5" id="addEditModalLabel">
                 Modal title
               </h1>

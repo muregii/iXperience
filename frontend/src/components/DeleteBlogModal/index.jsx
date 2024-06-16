@@ -42,11 +42,24 @@ export default function DeleteBlogModal() {
     deleteBlogModal?.hide();
   };
 
-  const onDelete = () => {
-    dispatch(deleteBlogById(blog?.id));
-    resetBlog();
-    deleteBlogModal?.hide();
+  const onDelete = async () => {
+    if (!blog?.id) {
+      console.error('Invalid blog ID');
+      return;
+    }
+  
+    try {
+      console.log('Attempting to delete blog with id:', blog.id);
+      await dispatch(deleteBlogById(blog.id)).unwrap();
+      console.log('Blog deleted successfully');
+    } catch (error) {
+      console.error('Error deleting blog:', error);
+    } finally {
+      resetBlog();
+      deleteBlogModal?.hide();
+    }
   };
+  
 
   return (
     <div

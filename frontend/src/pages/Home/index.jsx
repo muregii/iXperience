@@ -51,7 +51,7 @@ export default function Home() {
       }
     };
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   if (isLoadingBlogs || isLoadingCategories) {
     return <Loading />;
