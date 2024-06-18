@@ -22,6 +22,7 @@ export default function ProfilePage() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [message, setMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     const fetchAuthorBlogs = async () => {
@@ -51,6 +52,38 @@ export default function ProfilePage() {
     setMessage("");
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSelectedImage(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setAuthor((prevAuthor) => ({ ...prevAuthor, image: e.target.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleImageUpload = async () => {
+    if (selectedImage) {
+      try {
+        setIsLoading(true);
+        const formData = new FormData();
+        formData.append("image", selectedImage);
+
+        const updatedAuthor = await authService.updateUserImage(authorId, formData);
+        setAuthor(updatedAuthor.data);
+        setIsLoading(false);
+        setIsSuccess(true);
+        setMessage("Profile picture updated successfully!");
+      } catch (error) {
+        setIsError(true);
+        setIsLoading(false);
+        setMessage(error.message || error);
+      }
+    }
+  };
+
   const AuthorDetails = () => {
     return (
       <div className="col-md-8 col-lg-6 col-xl-4 mx-auto">
@@ -59,8 +92,14 @@ export default function ProfilePage() {
             <h4 className="fst-italic">
               {author.firstName} {author.lastName}
             </h4>
-            <img src={author.image} className="avatar" alt="..." />
+            <img src={`http://localhost:8000${author.image}`} className="avatar" alt="..." />
             <p>{author.bio.substring(0, 100)}...</p>
+            <input type="file" onChange={handleImageChange} />
+            {selectedImage && (
+              <button onClick={handleImageUpload} className="btn btn-primary mt-2">
+                Upload New Profile Picture
+              </button>
+            )}
           </div>
         </div>
       </div>

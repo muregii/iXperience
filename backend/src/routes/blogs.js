@@ -57,6 +57,10 @@ router.put("/:id", protect, upload.single("image"), (req, res) => {
   blogController.updateBlogByID(req, res);
 });
 
+router.put('/:userId/image', upload.single('image'), (req, res) => {
+  blogController.updateUserImage(req, res);
+});
+
 /**
  * DELETE /api/blogs/
  */

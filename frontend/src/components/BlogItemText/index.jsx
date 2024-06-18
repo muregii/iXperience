@@ -5,6 +5,7 @@ import Categories from "../Categories";
 import "./index.css";
 
 export default function BlogItemText({ blogPost, headerFontSize }) {
+  console.log("BlogItemText blogPost:", blogPost); // Add this line
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -33,6 +34,6 @@ export default function BlogItemText({ blogPost, headerFontSize }) {
   );
 }
 BlogItemText.propTypes = {
-  blogPost: PropTypes.array.isRequired,
+  blogPost: PropTypes.object.isRequired,
   headerFontSize: PropTypes.string.isRequired,
 };

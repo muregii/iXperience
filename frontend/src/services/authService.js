@@ -85,11 +85,29 @@ const updateUser = async (userId, userData) => {
   return responseData;
 };
 
+const updateUserImage = async (userId, formData) => {
+  const response = await fetch(`http://localhost:8000/api/auth/${userId}/image`, {
+    method: "PUT",
+    headers: {
+      Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const res = await response.json();
+    throw new Error(res.message || JSON.stringify(res));
+  }
+
+  return await response.json();
+};
+
 const authService = {
   register,
   login,
   getUser,
   updateUser,
+  updateUserImage
 };
 
 export default authService;

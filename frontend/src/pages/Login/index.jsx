@@ -8,7 +8,7 @@ import Loading from "../../components/Loading";
 
 import "./index.css";
 
-import { login, resetSuccessAndError } from "../../features/authSlice";
+import { login, reset, resetSuccessAndError } from "../../features/authSlice";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
@@ -17,6 +17,11 @@ export default function LoginPage() {
   const { isSuccess, isError, message, isLoading } = useSelector(
     (state) => state.auth
   );
+
+  if (isSuccess) {
+    resetSuccessAndError()
+    navigate("/home");
+  }
 
   const [formData, setFormData] = useState({
     email: "",
@@ -36,7 +41,6 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       dispatch(login(formData));
-      navigate("/home");
     } catch (err) {
       console.log(err);
     }

@@ -2,7 +2,7 @@ const createBlog = async (blog) => {
   const response = await fetch("http://localhost:8000/api/blogs", {
     method: "POST",
     headers: {
-      //"Content-Type": "application/json",
+      // "Content-Type": "application/json",
       Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
     },
     body: blog,
@@ -13,7 +13,7 @@ const createBlog = async (blog) => {
       let res = await response.json();
       throw res.message || JSON.stringify(res);
     } catch (err) {
-     
+      
       const error = new Error("Something went wrong");
       throw error.message;
     }
@@ -119,10 +119,10 @@ const fetchBlogsByAuthorId = async (authorId) => {
 };
 
 const updateBlog = async (blog) => {
-  const response = await fetch("http://localhost:8000/api/blogs/" + blog.id, {
+  const response = await fetch("http://localhost:8000/api/blogs/" + blog.get('id'), {
     method: "PUT",
     headers: {
-      //"Content-Type": "application/json",
+      // "Content-Type": "application/json",
       Authorization: "Bearer " + JSON.parse(localStorage.getItem("user")).token,
     },
     body: blog,
@@ -132,7 +132,6 @@ const updateBlog = async (blog) => {
       let res = await response.json();
       throw res.message || JSON.stringify(res);
     } catch (err) {
-      console.log(err);
       const error = new Error("Something went wrong");
       throw error.message;
     }

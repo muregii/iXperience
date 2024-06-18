@@ -33,6 +33,7 @@ export default function BlogItem({
       />
     );
   };
+  
   if (imageOrientation === "top") {
     return (
       <div key={index} className="card-1" onClick={navigateToBlog}>
