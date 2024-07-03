@@ -9,5 +9,6 @@ function twosum(nums, target){
         }
         map.set(nums[i], i)
     }
+    
     return [];
 }
